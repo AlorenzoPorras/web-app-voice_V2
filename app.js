@@ -54,10 +54,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Caso: "abre nueva pestaña"
             case result.includes("abre nueva pestaña"):
+                // Actualizar el contenido del elemento orderResultDiv con un mensaje indicando que se ha identificado la orden
                 orderResultDiv.innerHTML = `<p>Orden identificada: <strong>${result}</strong></p>`;
-                window.open('about:blank', '_blank');
-                insertarJson("Abrir nueva pestaña");
+                // Abrir una nueva pestaña del navegador con la URL deseada
+                window.open('https://www.google.com', '_blank');
+               // Llamar a la función insertarJson con el argumento "Abrir nueva pestaña"
+               insertarJson("Abrir nueva pestaña");
                 break;
+
 
             /*
                  //No manda a la api por la interrupcion al cerrar la ventana 
