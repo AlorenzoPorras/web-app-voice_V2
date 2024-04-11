@@ -107,11 +107,11 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('Error al subir el recurso');
+              throw new Error('Error al subir');
             }
             return response.json();
         })
-        .then(data => console.log('Recurso subido exitosamente:', data))
+        .then(data => console.log('Subido exitosamente:', data))
         .catch(error => console.error('Error:', error));
     }
 
