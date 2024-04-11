@@ -1,70 +1,32 @@
 document.addEventListener('DOMContentLoaded', function () {
     // Obtener referencias a los elementos HTML necesarios
-    const startRecognitionBtn = document.getElementById('startRecognition');
     const orderResultDiv = document.getElementById('orderResult');
     const controlTexto = document.getElementById("controlTexto");
+    let recognition; // Variable para mantener la instancia del reconocimiento de voz
 
-    // Agregar un evento de clic al botón de activación del reconocimiento de voz
-    startRecognitionBtn.addEventListener('click', function () {
+    const startRecognition = () => {
         // Verificar si el navegador es compatible con el reconocimiento de voz
         if ('webkitSpeechRecognition' in window) {
             // Crear una nueva instancia de reconocimiento de voz
-            const recognition = new webkitSpeechRecognition();
+            recognition = new webkitSpeechRecognition();
             recognition.lang = 'es-ES'; // Establecer el idioma del reconocimiento
+            recognition.continuous = false; // No continua automáticamente
+            recognition.interimResults = false; // No devuelve resultados intermedios
 
-            // Definir el comportamiento cuando se detecta un resultado de reconocimiento de voz
             recognition.onresult = function (event) {
-                // Obtener el texto reconocido y convertirlo a minúsculas para simplificar las comparaciones
                 const result = event.results[0][0].transcript.toLowerCase();
                 console.log('Orden identificada:', result);
 
                 // Realizar acciones según el texto reconocido
-                switch (true) {
-                    // Caso: "letra italic"
-                    case result.includes("letra itali"):
-                    orderResultDiv.innerHTML = `<p>Orden identificada: <strong>${result}</strong></p>`;
-                    controlTexto.classList.add('fst-italic');
-                    insertarJson("Cambiar texto a italic");
-                    break;
-                
-                    // Caso: "abre youtube"
-                    case result.includes("abre youtube"):
-                        // Actualiza el contenido del elemento orderResultDiv con un mensaje indicando que se ha identificado la orden
-                        orderResultDiv.innerHTML = `<p>Orden identificada: <strong>${result}</strong></p>`;
-                        // Abre una nueva pestaña del navegador que carga la página de YouTube
-                        window.open('https://www.youtube.com/', '_blank');
-                        // Llama a la función insertarJson con el argumento "Abrir YouTube"
-                        insertarJson("Abrir YouTube");
-                        break;
-                
-                    // Caso: "abre nueva pestaña"
-                    case result.includes("abre nueva pestaña"):
-                    // Actualizar el contenido del elemento orderResultDiv con un mensaje indicando que se ha identificado la orden
-                    orderResultDiv.innerHTML = `<p>Orden identificada: <strong>${result}</strong></p>`;
-                    // Abrir una nueva pestaña del navegador con una página en blanco
-                      window.open('about:blank', '_blank');
-                    // Llamar a la función insertarJson con el argumento "Abrir nueva pestaña"
-                     insertarJson("Abrir nueva pestaña");
-                   break;
+                processCommand(result);
+            };
 
-                    
-                
-                  // Caso: "cerrar pestaña actual"
-                  case result.includes("cerrar pestaña actual"):
-                 // Llamar a la función insertarJson con el argumento "Cerrar pestaña actual"
-                 insertarJson("Cerrar pestaña actual").then(() => window.close());
-                 break;
-
-                // Caso: "cerrar navegador"
-                case result.includes("cerrar navegador"):
-               // Cerrar la ventana actual del navegador
-               window.top.close();
-               break;
-
-                            
-                            
-                }
-                
+            recognition.onend = function () {
+                // Reiniciar automáticamente el reconocimiento de voz después de 2 segundos o inmediatamente después de procesar un comando
+                setTimeout(() => {
+                    console.log("Reiniciando el reconocimiento...");
+                    recognition.start();
+                }, 2000);
             };
 
             // Iniciar el reconocimiento de voz
@@ -72,7 +34,63 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             alert('El reconocimiento de voz no es soportado por este navegador.');
         }
-    });
+    };
+
+    const processCommand = (result) => {
+        switch (true) {
+            // Caso: "letra italic"
+            case result.includes("letra itali"):
+                orderResultDiv.innerHTML = `<p>Orden identificada: <strong>${result}</strong></p>`;
+                controlTexto.classList.add('fst-italic');
+                insertarJson("Cambiar texto a italic");
+                break;
+
+            // Caso: "abre youtube"
+            case result.includes("abre youtube"):
+                orderResultDiv.innerHTML = `<p>Orden identificada: <strong>${result}</strong></p>`;
+                window.open('https://www.youtube.com/', '_blank');
+                insertarJson("Abrir YouTube");
+                break;
+
+            // Caso: "abre nueva pestaña"
+            case result.includes("abre nueva pestaña"):
+                orderResultDiv.innerHTML = `<p>Orden identificada: <strong>${result}</strong></p>`;
+                window.open('about:blank', '_blank');
+                insertarJson("Abrir nueva pestaña");
+                break;
+
+            /*
+                 //No manda a la api por la interrupcion al cerrar la ventana 
+
+            // Caso: "cerrar pestaña actual"
+            case result.includes("cerrar pestaña actual"):
+                insertarJson("Cerrar pestaña actual").then(() => window.close());
+                break;
+
+            // Caso: "cerrar navegador"
+            case result.includes("cerrar navegador"):
+                window.top.close();
+                break;*/
+
+                // deberia de mandar :/
+            // Caso: "cerrar pestaña actual"
+            case result.includes("cerrar pestaña actual"):
+                insertarJson("Cerrar pestaña actual").then(() => {
+                console.log("Intentando cerrar la pestaña...");
+                window.close(); // Intenta cerrar la pestaña
+                }).catch(error => console.error("Error al insertar JSON antes de cerrar la pestaña:", error));
+            break;
+
+           // Caso: "cerrar navegador"
+            case result.includes("cerrar navegador"):
+                insertarJson("Cerrar navegador").then(() => {
+                console.log("Intentando cerrar el navegador...");
+                window.top.close(); // Intenta cerrar el navegador
+                }).catch(error => console.error("Error al insertar JSON antes de cerrar el navegador:", error));
+            break;
+ 
+        }
+    };
 
     // Función para enviar los datos a la API
     function insertarJson(ingresos) {
@@ -92,4 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => console.log('Recurso subido exitosamente:', data))
         .catch(error => console.error('Error:', error));
     }
+
+    // Iniciar el ciclo de reconocimiento de voz automáticamente
+    startRecognition();
 });
