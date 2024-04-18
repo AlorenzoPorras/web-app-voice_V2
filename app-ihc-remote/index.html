@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejecucion de ordenes</title>
+    <!-- Agregamos la referencia al archivo CSS de Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Estilos personalizados */
+        body {
+            padding-top: 60px; /* Ajuste para el navbar */
+            padding-bottom: 60px; /* Ajuste para el footer */
+        }
+    </style>
+</head>
+<body>
+    <!-- Encabezado -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Mi Aplicación</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+<!-- Contenido principal -->
+<div class="container mt-5">
+    <h2>Última orden</h2>
+    <div class="border border-md p-3">
+        <p><strong>Texto de la última orden:</strong></p>
+        <div id="lastOrderText"></div>
+    </div>
+</div>
+
+
+
+    <!-- Pie de página -->
+    <footer class="footer bg-dark fixed-bottom">
+        <div class="container text-center text-white">
+            <span class="text-muted">© 2024 Mi Aplicación Adriel E. Lorenzo</span>
+        </div>
+    </footer>
+
+    <!-- Agregamos la referencia al archivo JS de Bootstrap y a jQuery para el funcionamiento de Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Agregamos la referencia al archivo JavaScript personalizado -->
+    <script src="main.js"></script>
+</body>
+</html>
